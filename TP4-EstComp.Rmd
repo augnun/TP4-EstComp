@@ -1,0 +1,14 @@
+---
+title: "Quarto Trabalho Prático de Estatística Computacional"
+subtitle: Aprendizado Estatístico
+author:
+- Alisson Moreira Ferreira - 11/0106946
+- Augusto Cesar Ribeiro Nunes - 13/0103004
+date: "26 de maio de 2016"
+output: pdf_document
+abstract: "Este Trabalho Prático implementa dois classificadores supervisionados: KNN (_K-Nearest Neighbors_) e Classificador Bayesiano, e um classificador não supervisionado: _K-Means_ na linguagem R e testa-os com os dados disponibilizados no arquivo heart.txt. Suas classificações foram avaliadas e ..."
+---
+
+# Introdução
+
+O _Machine Learning_, por vezes traduzido como Aprendizado Estatístico, Aprendizagem Automática ou Máquinas de Aprendizagem refere-se a um conjunto de técnicas e 
