@@ -1,74 +1,50 @@
-dados <- read.csv("heart.txt", sep="")
-
-str(dados)
-padronizar <- function(x){
-  return((x - min(x))/(max(x)-min(x)))
-}
-dados.std <- NULL
-
-dados.std <- as.data.frame(lapply(dados, padronizar)) #exclui a col de categorias
-
-dados.std <- data.frame(dados.std)
-colnames(dados.std) <- colnames(dados)
-
-
-set.seed(13)
-dados.std.teste <- dados.std[sample.int(nrow(dados.std), 100),]
-
-vizinhanca <- lapply(distancias.matriz, sort.list)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-dados <- read.csv("heart.txt", sep="", header=FALSE)
+dados <- read.csv("heart.txt", sep = "", header = FALSE)
 
 padronizar <- function(x){
   return((x - min(x))/(max(x)-min(x)))
 }
-dados.std <- NULL
 
-dados.std <- as.data.frame(lapply(dados, padronizar))
-# NOTAR QUE PADRONIZAMOS INCLUSIVE A CATEGORIA 
-# COLUNA 14, QUE ERA 1-2
-# E PASSOU A SER 0-1
-
-
-dados.std <- data.frame(dados.std)
-colnames(dados.std) <- colnames(dados)
+dados.std <- as.data.frame(lapply(dados[1:13], padronizar))
+dados.std <- cbind(dados.std, dados$V14, dados$V14)
 
 set.seed(13)
 dados.std.validacao <- head(dados.std, n = 100)
 dados.std.treino <- tail(dados.std,n = 170)
 
-knn.ingenuo <- function(treino, validacao, k = 5){
-  for(i in 1:length(validacao)){
-    mat.distancias <- dist(rbind(validacao[i,], treino))
-    minimo <- which(mat.distancias == min(mat.distancias), arr.ind = TRUE)
+colnames(dados.std) <- c("V1", "V2", "V3", "V4",
+                         "V5", "V6", "V7", "V8",
+                         "V9", "V10", "V11", "V12",
+                         "V13",  "Class", "knn")
+
+vizinhos <- function(dados.validacao, k){
+  n <- nrow(dados.validacao)
+  if (n <= k) stop("k não pode ser maior que n - 1")
+  mat.vizinhos <- matrix(0, nrow = n, ncol = k)
+  for(i in 1:n) {
+    dist.euclidiana <- colSums((dados.validacao[i, ] - t(dados.validacao)) ^ 2)  
+    mat.vizinhos[i, ] <- order(dist.euclidiana)[2:(k + 1)]
   }
+  return(mat.vizinhos)
 }
+
+p <- 0
+p2 <- 0
+
+classificador.knn <- function(dados.validacao, mat.vizinhos) {
+  for (i in 1:nrow(mat.vizinhos)) {
+      p = sum(dados.validacao[mat.vizinhos[i,], 14] == 2)
+    if( p > 2){
+      dados.validacao[i,15] = 2
+    }
+    else{
+      dados.validacao[i,15] = 1
+    }
+  }
+
+  # ifelse(p > 2, dados.validacao[mat.vizinhos[i,j], 15] = 2, 
+  #        dados.validacao[mat.vizinhos[i,j], 15] = 1)
+  return(dados.validacao[,15])
+}
+
+dados.std.validacao[,15] <- classificador.knn(dados.std.validacao, mat.vizinhos)
+sum(dados.std.validacao[,14] == dados.std.validacao[,15])
