@@ -11,10 +11,16 @@ set.seed(13)
 dados.std.validacao <- head(dados.std, n = 100)
 dados.std.treino <- tail(dados.std,n = 170)
 
-colnames(dados.std) <- c("V1", "V2", "V3", "V4",
+names(dados.std) <- c("V1", "V2", "V3", "V4",
                          "V5", "V6", "V7", "V8",
                          "V9", "V10", "V11", "V12",
                          "V13",  "Class", "knn")
+
+
+names(dados.std.validacao) <- c("V1", "V2", "V3", "V4",
+                      "V5", "V6", "V7", "V8",
+                      "V9", "V10", "V11", "V12",
+                      "V13",  "Class", "knn")
 
 vizinhos <- function(dados.validacao, k){
   n <- nrow(dados.validacao)
@@ -27,6 +33,8 @@ vizinhos <- function(dados.validacao, k){
   return(mat.vizinhos)
 }
 
+
+mat.vizinhos <- vizinhos(dados.std.validacao,5)
 p <- 0
 p2 <- 0
 
@@ -40,11 +48,21 @@ classificador.knn <- function(dados.validacao, mat.vizinhos) {
       dados.validacao[i,15] = 1
     }
   }
-
-  # ifelse(p > 2, dados.validacao[mat.vizinhos[i,j], 15] = 2, 
-  #        dados.validacao[mat.vizinhos[i,j], 15] = 1)
   return(dados.validacao[,15])
 }
 
 dados.std.validacao[,15] <- classificador.knn(dados.std.validacao, mat.vizinhos)
 sum(dados.std.validacao[,14] == dados.std.validacao[,15])
+
+
+####
+# Classificador Bayesiano
+
+c_1 <- mean(dados.std.validacao[,14] == 1)
+c_2 <- 1 - c_1
+
+
+prod(mean(which(dados.std.validacao[,14] == 2)))
+
+
+

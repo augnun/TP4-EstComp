@@ -11,4 +11,32 @@ abstract: "Este Trabalho Prático implementa dois classificadores supervisionado
 
 # Introdução
 
-O _Machine Learning_, por vezes traduzido como Aprendizado Estatístico, Aprendizagem Automática ou Máquinas de Aprendizagem refere-se a um conjunto de técnicas e 
+O _Machine Learning_, por vezes traduzido como Aprendizado Estatístico, Aprendizagem Automática ou Máquinas de Aprendizagem refere-se a um conjunto de técnicas e ...
+
+
+# Análise Exploratória dos Dados
+
+Passo obrigatório na definição de quaisquer modelos estatísticos que se prezem, a Análise Exploratória serve de ponto inicial para sugestões sobre as distribuições dos dados. Porém, como o conjunto de variáveis é consideravelmente grande para um Trabalho Prático que, supõe-se, deve ser breve, este estágio foi omitido __nesta versão do relatório__, porém encontra-se na versão disponível eletronicamente em ... Ainda assim, são ilustrados aqui os achados exploratórios considerados mais relevantes:
+```{r exploratoria}
+require("ggplot2")
+require("randtests")
+source("TP4.R")
+str(dados.std.validacao)
+with(dados.std.validacao, table(Class == 1))
+ggplot(dados.std.validacao, aes(x = V1, y = V2, colour = Class)) + geom_point()
+ggplot(dados.std.validacao, aes(x = V1, y = V3, colour = Class)) + geom_point()
+plot(density(dados.std.validacao$Class))
+ks.test(dados.std.validacao$Class, "pnorm")
+```
+* O Teste de Wald-Wolfowitz de Aleatoriedade (também conhecido como _Runs Test_) não rejeita a hipótese de aleatoriedade de nenhuma das variáveis preditoras do modelo.
+* Há uma grande _sobreposição_ de diferentes classificações _dentro_ dos grupos de variáveis preditoras. 
+* Testes de Aderência (Kolmogorov-Smirnov e Anderson-Darling) não identificaram distribuições conhecidas para as variáveis preditoras.
+
+
+
+# _Näive_ Bayes
+
+
+
+## Exemplo de Tabelas de Frequência
+
