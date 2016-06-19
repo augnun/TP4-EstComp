@@ -1,7 +1,8 @@
 dados <- read.csv("heart.txt", sep = "", header = FALSE)
 
-padronizar <- function(x){
-  return((x - min(x))/(max(x)-min(x)))
+padronizar <- function(x, tipo = "minmax"){
+  if(tipo == "minmax"){  return((x - min(x))/(max(x)-min(x)))}
+  if(tipo == "escore-z"){ return((x - mean(x))/sd(x))}
 }
 
 dados.std <- as.data.frame(lapply(dados[1:13], padronizar))
@@ -58,11 +59,38 @@ sum(dados.std.validacao[,14] == dados.std.validacao[,15])
 ####
 # Classificador Bayesiano
 
-c_1 <- mean(dados.std.validacao[,14] == 1)
-c_2 <- 1 - c_1
+c_1 <- mean(dados.std.validacao[,14] == 1) #0.57
+c_2 <- 1 - c_1 #0.63
+
+dados.std.validacao.c1 <- dados.std.validacao[which(dados.std.validacao$Class == 1),]
+dados.std.validacao.c2 <- dados.std.validacao[which(dados.std.validacao$Class == 2),]
+
+dados.std.treino$NB = numeric(length = 170)
+
+prod = numeric()
+i = 1
+j = 1
+# prob1 = vector()
+# Classe 1
+for(i in 1:170){
+  for(j in 1:15){
+    prod = mean(dados.std.treino[i,j] == dados.std.validacao.c1[,j])
+    prob1 <- append(prob1, prod)
+  
+    
+    prod = mean(dados.std.treino[i,j] == dados.std.validacao.c2[,j])
+    prob2 = append(prob2,prod)
+    
+    prob1 <- prod(prob1[which(prob1 != 0)])
+    prob2 <- prod(prob2[which(prob2 != 0)])
+    
+    if(prob1 > prob2){dados.std.treino[i,16] = 1}
+    else(dados.std.treino[i,16] = 2)
+           
+  }
+}
 
 
-prod(mean(which(dados.std.validacao[,14] == 2)))
 
-
+# K-means clustering
 
